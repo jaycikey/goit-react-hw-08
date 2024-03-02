@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useId } from "react";
 import styles from "./ContactForm.module.css";
 import Button from "../Button/Button";
-import { addContact } from "../../redux/contactsOperations";
+import { addContact } from "../../redux/phone/contactsOperations";
 
 const contactSchema = Yup.object().shape({
   name: Yup.string()
@@ -33,7 +33,7 @@ const ContactForm = () => {
   const numberFieldId = useId();
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    dispatch(addContact(values));
+    dispatch(addContact({ name: values.name, number: values.number }));
     setSubmitting(false);
     resetForm();
   };

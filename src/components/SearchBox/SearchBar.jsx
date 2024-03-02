@@ -1,6 +1,6 @@
 import styles from "./SearchBar.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { setFilter } from "../../redux/filtersSlice";
+import { setFilter } from "../../redux/phone/filtersSlice";
 
 const SearchBar = () => {
   const filter = useSelector((state) => state.filters.name);
