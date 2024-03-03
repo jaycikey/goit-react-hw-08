@@ -1,10 +1,11 @@
 import { useDispatch } from "react-redux";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useId } from "react";
-import styles from "./ContactForm.module.css";
-import Button from "../Button/Button";
-import { addContact } from "../../redux/phone/contactsOperations";
+import { Box } from "@mui/material";
+import MUIButton from "../MUIButton/MUIButton";
+import { addContact } from "../../redux/phone/operations";
+import FormikTextField from "../FormikTextField/FormikTextField";
+import toast from "react-hot-toast";
 
 const contactSchema = Yup.object().shape({
   name: Yup.string()
@@ -29,42 +30,61 @@ const contactSchema = Yup.object().shape({
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-  const nameFieldId = useId();
-  const numberFieldId = useId();
 
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    dispatch(addContact({ name: values.name, number: values.number }));
-    setSubmitting(false);
-    resetForm();
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      await dispatch(addContact(values)).unwrap();
+      toast.success("Contact added successfully!");
+      resetForm();
+    } catch (error) {
+      toast.error(
+        `Failed to add contact: ${error.message || "Please try again."}`
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Formik
-      initialValues={{
-        name: "",
-        number: "",
-      }}
+      initialValues={{ name: "", number: "" }}
       validationSchema={contactSchema}
       onSubmit={handleSubmit}
     >
-      <Form className={styles.form}>
-        <div className={styles.inputContainer}>
-          <label htmlFor={nameFieldId}>Name:</label>
-          <Field id={nameFieldId} className={styles.input} name="name" />
-          <ErrorMessage className={styles.error} name="name" component="span" />
-        </div>
-
-        <div className={styles.inputContainer}>
-          <label htmlFor={numberFieldId}>Phone:</label>
-          <Field id={numberFieldId} className={styles.input} name="number" />
-          <ErrorMessage
-            className={styles.error}
-            name="number"
-            component="span"
-          />
-        </div>
-        <Button type="submit">Add contact</Button>
-      </Form>
+      {({ isSubmitting }) => (
+        <Form>
+          <Box marginBottom={2}>
+            <Field
+              name="name"
+              component={FormikTextField}
+              label="Name"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <Field
+              name="number"
+              component={FormikTextField}
+              label="Phone"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+            />
+          </Box>
+          <Box textAlign="center">
+            <MUIButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isSubmitting}
+            >
+              Add Contact
+            </MUIButton>
+          </Box>
+        </Form>
+      )}
     </Formik>
   );
 };

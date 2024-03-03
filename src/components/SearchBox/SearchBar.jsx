@@ -1,4 +1,4 @@
-import styles from "./SearchBar.module.css";
+import { TextField, Box } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { setFilter } from "../../redux/phone/filtersSlice";
 
@@ -12,16 +12,17 @@ const SearchBar = () => {
   };
 
   return (
-    <div className={styles.inputContainer}>
-      <label htmlFor="search-filter">Find contacts by name:</label>
-      <input
+    <Box sx={{ my: 2 }}>
+      <TextField
+        fullWidth
         id="search-filter"
-        className={styles.input}
+        label="Find contacts by name:"
+        variant="outlined"
         type="text"
         value={filter}
         onChange={handleChange}
       />
-    </div>
+    </Box>
   );
 };
 

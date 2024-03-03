@@ -1,16 +1,22 @@
+import { AppBar as MuiAppBar, Toolbar, Box } from "@mui/material";
 import Navigation from "../Navigation/Navigation";
-import { UserMenu } from "../UserMenu/UserMenu";
-import { AuthNav } from "../AuthNav/AuthNav";
+import UserMenu from "../UserMenu/UserMenu";
+import AuthNav from "../AuthNav/AuthNav";
 import { useAuth } from "../../hooks/useAuth";
-import css from "./AppBar.module.css";
 
-export const AppBar = () => {
+const AppBar = () => {
   const { isLoggedIn } = useAuth();
 
   return (
-    <header className={css.header}>
-      <Navigation />
-      {isLoggedIn ? <UserMenu /> : <AuthNav />}
-    </header>
+    <MuiAppBar position="static">
+      <Toolbar>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <Navigation />
+          {isLoggedIn ? <UserMenu /> : <AuthNav />}
+        </Box>
+      </Toolbar>
+    </MuiAppBar>
   );
 };
+
+export default AppBar;

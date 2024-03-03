@@ -1,7 +1,11 @@
 import styles from "./Loader.module.css";
 
-const Loader = ({ children }) => {
-  return <div className={styles.loader}>{children}</div>;
+const Loader = () => {
+  return (
+    <div className={styles.loader}>
+      <div className={styles.circle}></div>
+    </div>
+  );
 };
 
 export default Loader;

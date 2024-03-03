@@ -1,44 +1,58 @@
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { logIn } from "../../redux/auth/operations";
-import css from "./LoginForm.module.css";
-import Button from "../Button/Button";
+import { TextField, Box, Container, Typography } from "@mui/material";
+import Button from "../MUIButton/MUIButton";
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
-    dispatch(
-      logIn({
-        email: form.elements.email.value,
-        password: form.elements.password.value,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        toast.success("Login successful!");
-      })
-      .catch(() => {
-        toast.error(`Login failed`);
-      });
-
-    form.reset();
+    try {
+      await dispatch(logIn({ email, password })).unwrap();
+      toast.success("Login successful!");
+      e.target.reset();
+    } catch (error) {
+      toast.error("Login failed");
+    }
   };
 
   return (
-    <form className={css.form} onSubmit={handleSubmit} autoComplete="off">
-      <label className={css.label}>
-        Email
-        <input type="email" name="email" />
-      </label>
-      <label className={css.label}>
-        Password
-        <input type="password" name="password" />
-      </label>
-      <Button type="submit">Log In</Button>
-    </form>
+    <Container maxWidth="xs">
+      <form onSubmit={handleSubmit} autoComplete="off">
+        <Box sx={{ my: 2 }}>
+          <Typography variant="h6">Login</Typography>
+        </Box>
+        <Box sx={{ my: 2 }}>
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            type="email"
+            variant="outlined"
+            required
+          />
+        </Box>
+        <Box sx={{ my: 2 }}>
+          <TextField
+            fullWidth
+            label="Password"
+            name="password"
+            type="password"
+            variant="outlined"
+            required
+          />
+        </Box>
+        <Box sx={{ my: 2, display: "flex", justifyContent: "center" }}>
+          <Button type="submit">Log In</Button>
+        </Box>
+      </form>
+    </Container>
   );
 };
+
+export default LoginForm;

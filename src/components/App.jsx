@@ -1,9 +1,9 @@
 import { useEffect, lazy } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
-import { Layout } from "./Layout";
-import { PrivateRoute } from "./PrivateRoute";
-import { RestrictedRoute } from "./RestrictedRoute";
+import Layout from "./Layout";
+import PrivateRoute from "./PrivateRoute";
+import RestrictedRoute from "./RestrictedRoute";
 import { refreshUser } from "../redux/auth/operations";
 import { useAuth } from "../hooks/useAuth";
 import Loader from "./Loader/Loader";
@@ -11,7 +11,8 @@ import Loader from "./Loader/Loader";
 const HomePage = lazy(() => import("../pages/Home"));
 const RegisterPage = lazy(() => import("../pages/Register"));
 const LoginPage = lazy(() => import("../pages/Login"));
-const TasksPage = lazy(() => import("../pages/Phone"));
+const TasksPage = lazy(() => import("../pages/Contacts"));
+const NotFoundPage = lazy(() => import("../pages/NotFound"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const App = () => {
   }, [dispatch]);
 
   return isRefreshing ? (
-    <Loader>Refreshing user...</Loader>
+    <Loader />
   ) : (
     <>
       <Routes>
@@ -32,7 +33,7 @@ const App = () => {
             path="/register"
             element={
               <RestrictedRoute
-                redirectTo="/phone"
+                redirectTo="/contacts"
                 component={<RegisterPage />}
               />
             }
@@ -40,15 +41,19 @@ const App = () => {
           <Route
             path="/login"
             element={
-              <RestrictedRoute redirectTo="/phone" component={<LoginPage />} />
+              <RestrictedRoute
+                redirectTo="/contacts"
+                component={<LoginPage />}
+              />
             }
           />
           <Route
-            path="/phone"
+            path="/contacts"
             element={
               <PrivateRoute redirectTo="/login" component={<TasksPage />} />
             }
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </>

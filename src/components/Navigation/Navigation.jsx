@@ -1,30 +1,38 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import css from "./Navigation.module.css";
+import { Button, Stack } from "@mui/material";
 
 const Navigation = () => {
   const { isLoggedIn } = useAuth();
+
   return (
-    <nav>
-      <NavLink
-        className={({ isActive }) =>
-          isActive ? `${css.link} ${css.active}` : css.link
-        }
+    <Stack direction="row" spacing={2}>
+      <Button
+        component={NavLink}
         to="/"
+        style={({ isActive }) => ({
+          textDecoration: "none",
+          color: isActive ? "#1976d2" : "rgba(0, 0, 0, 0.87)",
+          fontWeight: isActive ? "bold" : "normal",
+        })}
       >
         Home
-      </NavLink>
+      </Button>
       {isLoggedIn && (
-        <NavLink
-          className={({ isActive }) =>
-            isActive ? `${css.link} ${css.active}` : css.link
-          }
-          to="/phone"
+        <Button
+          component={NavLink}
+          to="/contacts"
+          style={({ isActive }) => ({
+            textDecoration: "none",
+            color: isActive ? "#1976d2" : "rgba(0, 0, 0, 0.87)",
+            fontWeight: isActive ? "bold" : "normal",
+          })}
         >
-          Phone
-        </NavLink>
+          Contacts
+        </Button>
       )}
-    </nav>
+    </Stack>
   );
 };
+
 export default Navigation;
