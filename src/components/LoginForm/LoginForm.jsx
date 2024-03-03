@@ -1,10 +1,32 @@
-import { Formik, Form, Field } from "formik";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { logIn } from "../../redux/auth/operations";
-import { TextField, Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import Button from "../MUIButton/MUIButton";
+import { Formik, Form, Field } from "formik";
+import FormikTextField from "../FormikTextField/FormikTextField";
 import * as Yup from "yup";
+
+const loginSchema = Yup.object().shape({
+  email: Yup.string()
+    .min(3, "Email must be at least 3 symbols long")
+    .max(50, "Email must be at less 50 symbols long")
+    .required("This is a required field")
+    .test(
+      "is-not-empty",
+      "Email cannot be just spaces",
+      (value) => value?.trim().length > 0
+    ),
+  password: Yup.string()
+    .min(3, "Password must be at least 3 symbols long")
+    .max(50, "Password must be at less 50 symbols long")
+    .required("This is a required field")
+    .test(
+      "is-not-empty",
+      "Password cannot be just spaces",
+      (value) => value?.trim().length > 0
+    ),
+});
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -14,31 +36,15 @@ const LoginForm = () => {
     password: "",
   };
 
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Required")
-      .test(
-        "is-not-empty",
-        "Email cannot be just spaces",
-        (value) => value?.trim().length > 0
-      ),
-    password: Yup.string()
-      .required("Required")
-      .test(
-        "is-not-empty",
-        "Password cannot be just spaces",
-        (value) => value?.trim().length > 0
-      ),
-  });
-
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       await dispatch(logIn(values)).unwrap();
       toast.success("Login successful!");
       resetForm();
     } catch (error) {
       toast.error("Login failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -46,7 +52,7 @@ const LoginForm = () => {
     <Container maxWidth="xs">
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={loginSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
@@ -56,24 +62,24 @@ const LoginForm = () => {
             </Box>
             <Box sx={{ my: 2 }}>
               <Field
-                as={TextField}
-                fullWidth
-                label="Email"
                 name="email"
-                type="email"
+                component={FormikTextField}
+                label="Email"
+                fullWidth
+                margin="normal"
                 variant="outlined"
-                required
+                type="email"
               />
             </Box>
             <Box sx={{ my: 2 }}>
               <Field
-                as={TextField}
-                fullWidth
-                label="Password"
                 name="password"
-                type="password"
+                component={FormikTextField}
+                label="Password"
+                fullWidth
+                margin="normal"
                 variant="outlined"
-                required
+                type="password"
               />
             </Box>
             <Box sx={{ my: 2, display: "flex", justifyContent: "center" }}>
